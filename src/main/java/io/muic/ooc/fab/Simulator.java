@@ -1,6 +1,5 @@
 package io.muic.ooc.fab;
 
-
 import io.muic.ooc.fab.view.SimulatorView;
 
 import java.awt.event.WindowEvent;
@@ -24,20 +23,18 @@ public class Simulator {
     private static final double RABBIT_CREATION_PROBABILITY = 0.08;
 
     // Lists of animals in the field.
-    private List<Rabbit> rabbits;
-    private List<Fox> foxes;
+    private final List<Animal> rabbits;
+    private final List<Animal> foxes;
     // The current state of the field.
-    private Field field;
+    private final Field field;
     // The current step of the simulation.
     private int step;
     // A graphical view of the simulation.
-    private SimulatorView view;
+    private final SimulatorView view;
     // Random generator
     private static final Random RANDOM = new Random();
 
-    /**
-     * Construct a simulation field with default size.
-     */
+    /** Construct a simulation field with default size. */
     public Simulator() {
         this(DEFAULT_DEPTH, DEFAULT_WIDTH);
     }
@@ -69,17 +66,14 @@ public class Simulator {
         reset();
     }
 
-    /**
-     * Run the simulation from its current state for a reasonably long period
-     * (4000 steps).
-     */
+    /** Run the simulation from its current state for a reasonably long period (4000 steps). */
     public void runLongSimulation() {
         simulate(4000);
     }
 
     /**
-     * Run the simulation for the given number of steps. Stop before the given
-     * number of steps if it ceases to be viable.
+     * Run the simulation for the given number of steps. Stop before the given number of steps if it
+     * ceases to be viable.
      *
      * @param numSteps The number of steps to run for.
      */
@@ -91,29 +85,29 @@ public class Simulator {
     }
 
     /**
-     * Run the simulation from its current state for a single step. Iterate over
-     * the whole field updating the state of each fox and rabbit.
+     * Run the simulation from its current state for a single step. Iterate over the whole field
+     * updating the state of each fox and rabbit.
      */
     public void simulateOneStep() {
         step++;
 
         // Provide space for newborn rabbits.
-        List<Rabbit> newRabbits = new ArrayList<>();
+        List<Animal> newRabbits = new ArrayList<>();
         // Let all rabbits act.
-        for (Iterator<Rabbit> it = rabbits.iterator(); it.hasNext();) {
-            Rabbit rabbit = it.next();
-            rabbit.run(newRabbits);
+        for (Iterator<Animal> it = rabbits.iterator(); it.hasNext(); ) {
+            Animal rabbit = it.next();
+            rabbit.act(newRabbits);
             if (!rabbit.isAlive()) {
                 it.remove();
             }
         }
 
         // Provide space for newborn foxes.
-        List<Fox> newFoxes = new ArrayList<>();
+        List<Animal> newFoxes = new ArrayList<>();
         // Let all foxes act.
-        for (Iterator<Fox> it = foxes.iterator(); it.hasNext();) {
-            Fox fox = it.next();
-            fox.hunt(newFoxes);
+        for (Iterator<Animal> it = foxes.iterator(); it.hasNext(); ) {
+            Animal fox = it.next();
+            fox.act(newFoxes);
             if (!fox.isAlive()) {
                 it.remove();
             }
@@ -126,9 +120,7 @@ public class Simulator {
         view.showStatus(step, field);
     }
 
-    /**
-     * Reset the simulation to a starting position.
-     */
+    /** Reset the simulation to a starting position. */
     public void reset() {
         step = 0;
         rabbits.clear();
@@ -139,11 +131,9 @@ public class Simulator {
         view.showStatus(step, field);
     }
 
-    /**
-     * Randomly populate the field with foxes and rabbits.
-     */
+    /** Randomly populate the field with foxes and rabbits. */
     private void populate() {
-        
+
         field.clear();
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
@@ -172,5 +162,9 @@ public class Simulator {
         } catch (InterruptedException ie) {
             // wake up
         }
+    }
+
+    public static void main(String[] args) {
+        new Simulator().simulate(300);
     }
 }

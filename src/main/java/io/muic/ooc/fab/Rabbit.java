@@ -18,8 +18,7 @@ public class Rabbit extends Animal {
     private static final Random RANDOM = new Random();
 
     /**
-     * Create a new rabbit. A rabbit may be created with age zero (a new born)
-     * or with a random age.
+     * Create a new rabbit. A rabbit may be created with age zero (a new born) or with a random age.
      *
      * @param randomAge If true, the rabbit will have a random age.
      * @param field The field currently occupied.
@@ -32,27 +31,6 @@ public class Rabbit extends Animal {
         setLocation(location);
         if (randomAge) {
             age = RANDOM.nextInt(MAX_AGE);
-        }
-    }
-
-    /**
-     * This is what the rabbit does most of the time - it runs around. Sometimes
-     * it will breed or die of old age.
-     *
-     * @param newRabbits A list to return newly born rabbits.
-     */
-    public void run(List<Rabbit> newRabbits) {
-        incrementAge();
-        if (isAlive()) {
-            giveBirth(newRabbits);
-            // Try to move into a free location.
-            Location newLocation = field.freeAdjacentLocation(location);
-            if (newLocation != null) {
-                setLocation(newLocation);
-            } else {
-                // Overcrowding.
-                setDead();
-            }
         }
     }
 
@@ -79,5 +57,21 @@ public class Rabbit extends Animal {
     @Override
     protected Animal createYoung(boolean randomAge, Field field, Location location) {
         return new Rabbit(randomAge, field, location);
+    }
+
+    /**
+     * This is what the rabbit does most of the time - it runs around. Sometimes it will breed or
+     * die of old age.
+     *
+     * @param newAnimals A list to return newly born rabbits.
+     */
+    @Override
+    protected void act(List<Animal> newAnimals) {
+        incrementAge();
+        if (isAlive()) {
+            giveBirth(newAnimals);
+            // Try to move into a free location.
+            locationHandler(field.freeAdjacentLocation(location));
+        }
     }
 }

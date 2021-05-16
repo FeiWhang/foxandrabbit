@@ -25,8 +25,8 @@ public class Fox extends Animal {
     private int foodLevel;
 
     /**
-     * Create a fox. A fox can be created as a new born (age zero and not
-     * hungry) or with a random age and food level.
+     * Create a fox. A fox can be created as a new born (age zero and not hungry) or with a random
+     * age and food level.
      *
      * @param randomAge If true, the fox will have random age and hunger level.
      * @param field The field currently occupied.
@@ -39,44 +39,13 @@ public class Fox extends Animal {
         setLocation(location);
         if (randomAge) {
             age = RANDOM.nextInt(MAX_AGE);
-            foodLevel = RANDOM.nextInt(RABBIT_FOOD_VALUE);
-        } else {
-            // leave age at 0
-            foodLevel = RANDOM.nextInt(RABBIT_FOOD_VALUE);
         }
+        foodLevel = RANDOM.nextInt(RABBIT_FOOD_VALUE);
     }
 
-    /**
-     * This is what the fox does most of the time: it hunts for rabbits. In the
-     * process, it might breed, die of hunger, or die of old age.
-     *
-     * @param field The field currently occupied.
-     * @param newFoxes A list to return newly born foxes.
-     */
-    public void hunt(List<Fox> newFoxes) {
-        incrementAge();
-        incrementHunger();
-        if (isAlive()) {
-            giveBirth(newFoxes);
-            // Move towards a source of food if found.
-            Location newLocation = findFood();
-            if (newLocation == null) {
-                // No food found - try to move to a free location.
-                newLocation = field.freeAdjacentLocation(location);
-            }
-            // See if it was possible to move.
-            if (newLocation != null) {
-                setLocation(newLocation);
-            } else {
-                // Overcrowding.
-                setDead();
-            }
-        }
-    }
+    public void hunt(List<Fox> newFoxes) {}
 
-    /**
-     * Make this fox more hungry. This could result in the fox's death.
-     */
+    /** Make this fox more hungry. This could result in the fox's death. */
     private void incrementHunger() {
         foodLevel--;
         if (foodLevel <= 0) {
@@ -85,16 +54,13 @@ public class Fox extends Animal {
     }
 
     /**
-     * Look for rabbits adjacent to the current location. Only the first live
-     * rabbit is eaten.
+     * Look for rabbits adjacent to the current location. Only the first live rabbit is eaten.
      *
      * @return Where food was found, or null if it wasn't.
      */
     private Location findFood() {
         List<Location> adjacent = field.adjacentLocations(location);
-        Iterator<Location> it = adjacent.iterator();
-        while (it.hasNext()) {
-            Location where = it.next();
+        for (Location where : adjacent) {
             Object animal = field.getObjectAt(where);
             if (animal instanceof Rabbit) {
                 Rabbit rabbit = (Rabbit) animal;
@@ -131,5 +97,27 @@ public class Fox extends Animal {
     @Override
     protected Animal createYoung(boolean randomAge, Field field, Location location) {
         return new Fox(randomAge, field, location);
+    }
+
+    /**
+     * This is what the fox does most of the time: it hunts for rabbits. In the process, it might
+     * breed, die of hunger, or die of old age.
+     *
+     * @param newAnimals A list to return newly born foxes.
+     */
+    @Override
+    protected void act(List<Animal> newAnimals) {
+        incrementAge();
+        incrementHunger();
+        if (isAlive()) {
+            giveBirth(newAnimals);
+            // Move towards a source of food if found.
+            Location newLocation = findFood();
+            if (newLocation == null) {
+                // No food found - try to move to a free location.
+                newLocation = field.freeAdjacentLocation(location);
+            }
+            locationHandler(newLocation);
+        }
     }
 }
