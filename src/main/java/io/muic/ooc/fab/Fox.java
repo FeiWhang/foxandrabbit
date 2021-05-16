@@ -100,8 +100,8 @@ public class Fox extends Animal {
     }
 
     /**
-     * This is what the fox does most of the time: it hunts for rabbits. In the process, it might
-     * breed, die of hunger, or die of old age.
+     * The fox action: it hunts for rabbits. In the process, it might breed, die of hunger, or die
+     * of old age.
      *
      * @param newAnimals A list to return newly born foxes.
      */
